@@ -1,3 +1,4 @@
+#Import the library to create GUI in Python
 import tkinter as tk
 
 # Create a window box
