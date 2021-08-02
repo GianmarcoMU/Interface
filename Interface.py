@@ -1,4 +1,5 @@
-### Here we try to create an interface starting from the original documentation about tkinter
+### Here we try to create an interface 
+## Note that this code just defines the graphical aspects, any functionality has been defined yet.
 
 # Firstly, import the required library. Namely, tkinter
 import tkinter as ttk
