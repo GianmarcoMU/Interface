@@ -1,9 +1,12 @@
+##This code uses Tkinter package in Python to recreate an option pricing
+##interface similar to the one of CBOE
+
 #Import the library to create GUI in Python
 import tkinter as tk
 
 # Create a window box
 window = tk.Tk() #Richiama il modulo Tk per creare una finestra
-window.geometry("700x600") #Definiamo la geometria della finestra
+window.geometry("800x700") #Definiamo la geometria della finestra
 window.title("Automated Computation Option Pricing")
 window.grid_columnconfigure(0, weight=1) #Adatta il contenuto della finestra quando si cambiano le dimensioni
 #window.resizable(False, False) #Rende impossibile modificare le dimensioni della finestra
