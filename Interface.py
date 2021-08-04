@@ -66,12 +66,12 @@ gamma_l = ttk.Label(frame4, text = "Gamma").grid(row = 1, column = 2, sticky = "
 theta_l = ttk.Label(frame4, text = "Theta").grid(row = 2, column = 0, sticky = "W")
 vega_l = ttk.Label(frame4, text = "Vega").grid(row = 2, column = 2, sticky = "W", pady = 5)
 
-th_price = ttk.Entry(frame4).grid(row = 0, column = 1, sticky = "NSEW")
-delta = ttk.Entry(frame4).grid(row = 0, column = 3, sticky = "NSEW")
-rho = ttk.Entry(frame4).grid(row = 1, column = 1, sticky = "NSEW")
-gamma = ttk.Entry(frame4).grid(row = 1, column = 3, sticky = "NSEW")
-theta = ttk.Entry(frame4).grid(row = 2, column = 1, sticky = "NSEW")
-vega = ttk.Entry(frame4).grid(row = 2, column = 3, sticky = "NSEW")
+th_price = ttk.Entry(frame4).grid(row = 0, column = 1, pady = 5)
+delta = ttk.Entry(frame4).grid(row = 0, column = 3, pady = 5)
+rho = ttk.Entry(frame4).grid(row = 1, column = 1, pady = 5)
+gamma = ttk.Entry(frame4).grid(row = 1, column = 3, pady = 5)
+theta = ttk.Entry(frame4).grid(row = 2, column = 1, pady = 5)
+vega = ttk.Entry(frame4).grid(row = 2, column = 3, pady = 5)
 
 mainframe.grid(row = 0, column = 0)
 frame1.grid(row = 0, columnspan = 2, sticky = "EW")
