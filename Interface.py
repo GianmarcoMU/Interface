@@ -12,19 +12,20 @@ root.title("Option Calculator")
 root.grid_columnconfigure(0, weight=1)
 root.grid_rowconfigure(0, weight = 1)
 
-#Create frames to organise better the interface
-mainframe = ttk.Frame(root)
-frame1 = ttk.Frame(mainframe, borderwidth = 5, relief = 'groove')
-frame2 = ttk.Frame(mainframe, borderwidth = 5, relief = "groove")
-frame3 = ttk.Frame(mainframe, borderwidth = 5, relief = "groove")
-frame4 = ttk.Frame(mainframe, borderwidth = 5, relief = "groove")
+# Create the second-level objects, called frames, to organise better the interface
+# See the pdf file to understand the graphical structure 
+mainframe = ttk.Frame(root).grid(row = 0, column = 0)
+frame1 = ttk.Frame(mainframe, borderwidth = 5, relief = 'groove').grid(row = 0, columnspan = 2, sticky = "EW")
+frame2 = ttk.Frame(mainframe, borderwidth = 5, relief = "groove").grid(row = 1, columnspan = 2, sticky = "EW")
+frame3 = ttk.Frame(mainframe, borderwidth = 5, relief = "groove").grid(row = 2, column = 0, sticky = "EW")
+frame4 = ttk.Frame(mainframe, borderwidth = 5, relief = "groove").grid(row = 2, column = 1,  sticky = "EW")
 
 # Create a Welcome text in the first frame to explain the functionalities of the application
 welcome = ttk.Label(frame1, text = "Welcome to the Option Calculator! This application has been developed to compute the theoretical price of option\
 derivatives using different methods \nfor given various inputs. Before using it make sure to use the british\
 notation (dot) for decimals and specify the dates in the following format.").grid(row = 0, columnspan = 4, sticky = "W")
 
-#Create some labels to make the interface clearer
+# Create some labels and buttons for the inputs
 opt_type = ttk.Label(frame2, text = "Option Type:", font = ('Helvetica', 10, 'bold')).grid(row = 0, column = 0, sticky = "W", padx = 5, pady = 5)
 ex_style = ttk.Label(frame2, text = "Exercise Style:", font = ('Helvetica', 10, 'bold')).grid(row = 1, column = 0, sticky = "W", padx = 5, pady = 5)
 meth = ttk.Label(frame2, text = "Methodology:", font = ('Helvetica', 10, 'bold')).grid(row = 2, column = 0, sticky = "W", padx = 5, pady = 5)
@@ -36,7 +37,6 @@ vol_l = ttk.Label(frame2, text = "Volatility", font = ('Helvetica', 10, 'bold'))
 rate_l = ttk.Label(frame2, text = "Interest Rate", font = ('Helvetica', 10, 'bold')).grid(row = 5, column = 2, sticky = "W", padx = 5, pady = 5)
 div_l = ttk.Label(frame2, text = "Dividend Yield", font = ('Helvetica', 10, 'bold')).grid(row = 5, column = 4, sticky = "W", padx = 5, pady = 5)
 
-# Create some useful buttons
 put = ttk.Checkbutton(frame2, text = "Put").grid(row = 0, column = 1, sticky = "W")
 call = ttk.Checkbutton(frame2, text = "Call").grid(row = 0, column = 2, sticky = "W")
 american = ttk.Checkbutton(frame2, text = "American").grid(row = 1, column = 1, sticky = "W")
@@ -45,7 +45,6 @@ bs = ttk.Checkbutton(frame2, text = "Black-Scholes").grid(row = 2, column = 1, s
 bin = ttk.Checkbutton(frame2, text = "Binomial Tree").grid(row = 2, column = 2, sticky = "W")
 jdm = ttk.Checkbutton(frame2, text = "Jump Diffusion").grid(row = 2, column = 3, sticky = "W")
 
-# Define variables that must be inserted manually
 str_pr = ttk.Entry(frame2).grid(row = 3, column = 1)
 st_pr = ttk.Entry(frame2).grid(row = 3, column = 3)
 start = ttk.Entry(frame2).grid(row = 4, column = 1)
@@ -54,7 +53,7 @@ vol = ttk.Entry(frame2).grid(row = 5, column = 1)
 rate = ttk.Entry(frame2).grid(row = 5, column = 3)
 div = ttk.Entry(frame2).grid(row = 5, column = 5)
 
-#Create two buttons that calculate outputs and reset inputs
+# Create two buttons that calculate outputs and reset inputs
 calc = ttk.Button(frame3, text = "CALCULATE").grid(row = 0, column = 0, padx = 160, pady = 5)
 reset = ttk.Button(frame3, text = "RESET").grid(row = 1, column = 0)
 plot = ttk.Button(frame3, text = "PLOT").grid(row = 2, column = 0, pady = 5)
@@ -73,13 +72,6 @@ rho = ttk.Entry(frame4).grid(row = 1, column = 1)
 gamma = ttk.Entry(frame4).grid(row = 1, column = 3)
 theta = ttk.Entry(frame4).grid(row = 2, column = 1)
 vega = ttk.Entry(frame4).grid(row = 2, column = 3)
-
-#Organise frames in the root
-mainframe.grid(row = 0, column = 0)
-frame1.grid(row = 0, columnspan = 2, sticky = "EW")
-frame2.grid(row = 1, columnspan = 2, sticky = "EW")
-frame3.grid(row = 2, column = 0, sticky = "EW")
-frame4.grid(row = 2, column = 1,  sticky = "EW")
 
 # This line of code open the window created
 root.mainloop()
