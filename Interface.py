@@ -13,12 +13,12 @@ root.grid_columnconfigure(0, weight=1)
 root.grid_rowconfigure(0, weight = 1)
 
 # Create the second-level objects, called frames, to organise better the interface
-# See the pdf file to understand the graphical structure 
-mainframe = ttk.Frame(root).grid(row = 0, column = 0)
-frame1 = ttk.Frame(mainframe, borderwidth = 5, relief = 'groove').grid(row = 0, columnspan = 2, sticky = "EW")
-frame2 = ttk.Frame(mainframe, borderwidth = 5, relief = "groove").grid(row = 1, columnspan = 2, sticky = "EW")
-frame3 = ttk.Frame(mainframe, borderwidth = 5, relief = "groove").grid(row = 2, column = 0, sticky = "EW")
-frame4 = ttk.Frame(mainframe, borderwidth = 5, relief = "groove").grid(row = 2, column = 1,  sticky = "EW")
+# See the pdf file to understand the graphical structure
+mainframe = ttk.Frame(root) 
+frame1 = ttk.Frame(mainframe, borderwidth = 5, relief = 'groove')
+frame2 = ttk.Frame(mainframe, borderwidth = 5, relief = "groove")
+frame3 = ttk.Frame(mainframe, borderwidth = 5, relief = "groove")
+frame4 = ttk.Frame(mainframe, borderwidth = 5, relief = "groove")
 
 # Create a Welcome text in the first frame to explain the functionalities of the application
 welcome = ttk.Label(frame1, text = "Welcome to the Option Calculator! This application has been developed to compute the theoretical price of option\
@@ -59,19 +59,25 @@ reset = ttk.Button(frame3, text = "RESET").grid(row = 1, column = 0)
 plot = ttk.Button(frame3, text = "PLOT").grid(row = 2, column = 0, pady = 5)
 
 # Define outputs: both labels and entries
-th_price_l = ttk.Label(frame4, text = "Theoretical Price").grid(row = 0, column = 0, sticky = "W")
+th_price_l = ttk.Label(frame4, text = "Theoretical Price").grid(row = 0, column = 0, sticky = "W", pady = 5)
 delta_l = ttk.Label(frame4, text = "Delta").grid(row = 0, column = 2, sticky = "W")
-rho_l = ttk.Label(frame4, text = "Rho").grid(row = 1, column = 0, sticky = "W")
-gamma_l = ttk.Label(frame4, text = "Gamma").grid(row = 1, column = 2, sticky = "W")
+rho_l = ttk.Label(frame4, text = "Rho").grid(row = 1, column = 0, sticky = "W", pady = 5)
+gamma_l = ttk.Label(frame4, text = "Gamma").grid(row = 1, column = 2, sticky = "W", pady = 5)
 theta_l = ttk.Label(frame4, text = "Theta").grid(row = 2, column = 0, sticky = "W")
-vega_l = ttk.Label(frame4, text = "Vega").grid(row = 2, column = 2, sticky = "W")
+vega_l = ttk.Label(frame4, text = "Vega").grid(row = 2, column = 2, sticky = "W", pady = 5)
 
-th_price = ttk.Entry(frame4).grid(row = 0, column = 1)
-delta = ttk.Entry(frame4).grid(row = 0, column = 3)
-rho = ttk.Entry(frame4).grid(row = 1, column = 1)
-gamma = ttk.Entry(frame4).grid(row = 1, column = 3)
-theta = ttk.Entry(frame4).grid(row = 2, column = 1)
-vega = ttk.Entry(frame4).grid(row = 2, column = 3)
+th_price = ttk.Entry(frame4).grid(row = 0, column = 1, sticky = "NSEW")
+delta = ttk.Entry(frame4).grid(row = 0, column = 3, sticky = "NSEW")
+rho = ttk.Entry(frame4).grid(row = 1, column = 1, sticky = "NSEW")
+gamma = ttk.Entry(frame4).grid(row = 1, column = 3, sticky = "NSEW")
+theta = ttk.Entry(frame4).grid(row = 2, column = 1, sticky = "NSEW")
+vega = ttk.Entry(frame4).grid(row = 2, column = 3, sticky = "NSEW")
+
+mainframe.grid(row = 0, column = 0)
+frame1.grid(row = 0, columnspan = 2, sticky = "EW")
+frame2.grid(row = 1, columnspan = 2, sticky = "EW")
+frame3.grid(row = 2, column = 0, sticky = "EW")
+frame4.grid(row = 2, column = 1,  sticky = "NSEW")
 
 # This line of code open the window created
 root.mainloop()
