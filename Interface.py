@@ -73,6 +73,7 @@ gamma = ttk.Entry(frame4).grid(row = 1, column = 3, pady = 5)
 theta = ttk.Entry(frame4).grid(row = 2, column = 1, pady = 5)
 vega = ttk.Entry(frame4).grid(row = 2, column = 3, pady = 5)
 
+# Note that if you directly type .grid in lines 18-21, something goes wrong
 mainframe.grid(row = 0, column = 0)
 frame1.grid(row = 0, columnspan = 2, sticky = "EW")
 frame2.grid(row = 1, columnspan = 2, sticky = "EW")
