@@ -1,5 +1,8 @@
 import tkinter as ttk
 from tkinter import *
+import scipy as sp
+from scipy import stats
+from scipy.stats import norm
 
 # We try to create two functions that use Entry and Checkbutton widgets in tkinter. 
 # This is just a useless example to retrieve the values that the user has inserted in the Entries and Checkbuttons
