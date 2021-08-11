@@ -84,12 +84,35 @@ def BS():
         N_d1 = norm.cdf(d1)
         N_d2 = norm.cdf(d2)
         c0 = (S*np.exp(-q*T)*N_d1)-(K*np.exp(-r*T)*N_d2)
+        D = np.exp(-q*T)*N_d1
+        V = K*np.exp(-r*T)*np.sqrt(T)*np.exp((-d2**2)/2)/(100*np.sqrt(2*np.pi))
+        R = T*K*np.exp(-r*T)*N_d2/100
+        TH = (-q*S*np.exp(-q*T)*N_d1) + (r*K*np.exp(-r*T)*N_d2) + (sigma/(2*np.sqrt(T*2*np.pi)))*K*np.exp(-r*T)*np.exp((-d2**2)/2) # Check
+        G = (1/(sigma*S*np.sqrt(T)))*np.exp(-q*T)*np.exp((-d1**2)/2)/np.sqrt(2*np.pi)
+
     else:
         N_d1 = norm.cdf(-d1)
         N_d2 = norm.cdf(-d2)
         c0 = (K*np.exp(-r*T)*N_d2)-(S*np.exp(-q*T)*N_d1)
+        D = -np.exp(-q*T)*N_d1
+        V = K*np.exp(-r*T)*np.sqrt(T)*np.exp((-d2**2)/2)/(100*np.sqrt(2*np.pi))
+        R = -T*K*np.exp(-r*T)*N_d2/100
+        TH = (-q*S*np.exp(-q*T)*N_d1) + (r*K*np.exp(-r*T)*N_d2) + (sigma/(2*np.sqrt(T*2*np.pi)))*K*np.exp(-r*T)*np.exp((-d2**2)/2) # Check
+        G = (1/(sigma*S*np.sqrt(T)))*np.exp(-q*T)*np.exp((-d1**2)/2)/np.sqrt(2*np.pi)
 
+
+    th_price.delete(0, len(str(th_price.get())))
+    delta.delete(0, len(str(delta.get())))
+    vega.delete(0, len(str(vega.get())))
+    rho.delete(0, len(str(rho.get())))
+    theta.delete(0, len(str(theta.get())))
+    gamma.delete(0, len(str(gamma.get())))
     th_price.insert(0, str(c0))
+    delta.insert(0, str(D))
+    vega.insert(0, str(V))
+    rho.insert(0, str(R))
+    theta.insert(0,str(TH))
+    gamma.insert(0,str(G))
 
 # The following function is the one associated to Reset button, to clear everything
 def cancel():
@@ -99,7 +122,12 @@ def cancel():
     div.delete(0, len(str(div.get())))
     th_price.delete(0, len(str(th_price.get())))
     rate.delete(0, len(str(rate.get())))
-    vol.delete(0, len(str(vol.get())))  
+    vol.delete(0, len(str(vol.get())))
+    delta.delete(0, len(str(delta.get())))
+    vega.delete(0, len(str(vega.get())))
+    rho.delete(0, len(str(rho.get())))
+    theta.delete(0, len(str(theta.get())))
+    gamma.delete(0, len(str(gamma.get())))  
 
 # Create two buttons that calculate outputs and reset inputs
 calc = ttk.Button(frame3, text = "CALCULATE",command = BS).grid(row = 0, column = 0, padx = 160, pady = 5)
@@ -115,13 +143,18 @@ theta_l = ttk.Label(frame4, text = "Theta").grid(row = 2, column = 0, sticky = "
 vega_l = ttk.Label(frame4, text = "Vega").grid(row = 2, column = 2, sticky = "W", pady = 5)
 
 th_price = ttk.Entry(frame4)
-delta = ttk.Entry(frame4).grid(row = 0, column = 3, pady = 5)
-rho = ttk.Entry(frame4).grid(row = 1, column = 1, pady = 5)
-gamma = ttk.Entry(frame4).grid(row = 1, column = 3, pady = 5)
-theta = ttk.Entry(frame4).grid(row = 2, column = 1, pady = 5)
-vega = ttk.Entry(frame4).grid(row = 2, column = 3, pady = 5)
+delta = ttk.Entry(frame4)
+rho = ttk.Entry(frame4)
+gamma = ttk.Entry(frame4)
+theta = ttk.Entry(frame4)
+vega = ttk.Entry(frame4)
 
 th_price.grid(row = 0, column = 1, pady = 5)
+delta.grid(row = 0, column = 3, pady = 5)
+vega.grid(row = 2, column = 3, pady = 5)
+rho.grid(row = 1, column = 1, pady = 5)
+theta.grid(row = 2, column = 1, pady = 5)
+gamma.grid(row = 1, column = 3, pady = 5)
 
 mainframe.grid(row = 0, column = 0)
 frame1.grid(row = 0, columnspan = 2, sticky = "EW")
