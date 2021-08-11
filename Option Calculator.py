@@ -87,7 +87,7 @@ def BS():
         D = np.exp(-q*T)*N_d1
         V = K*np.exp(-r*T)*np.sqrt(T)*np.exp((-d2**2)/2)/(100*np.sqrt(2*np.pi))
         R = T*K*np.exp(-r*T)*N_d2/100
-        TH = (-q*S*np.exp(-q*T)*N_d1) + (r*K*np.exp(-r*T)*N_d2) + (sigma/(2*np.sqrt(T*2*np.pi)))*K*np.exp(-r*T)*np.exp((-d2**2)/2) # Check
+        TH = ((q*S*np.exp(-q*T)*N_d1) - (r*K*np.exp(-r*T)*N_d2) - (((sigma/np.sqrt(T*8*np.pi))*K*np.exp(-r*T)*np.exp((-d2**2)/2))))/365
         G = (1/(sigma*S*np.sqrt(T)))*np.exp(-q*T)*np.exp((-d1**2)/2)/np.sqrt(2*np.pi)
 
     else:
@@ -97,7 +97,7 @@ def BS():
         D = -np.exp(-q*T)*N_d1
         V = K*np.exp(-r*T)*np.sqrt(T)*np.exp((-d2**2)/2)/(100*np.sqrt(2*np.pi))
         R = -T*K*np.exp(-r*T)*N_d2/100
-        TH = (-q*S*np.exp(-q*T)*N_d1) + (r*K*np.exp(-r*T)*N_d2) + (sigma/(2*np.sqrt(T*2*np.pi)))*K*np.exp(-r*T)*np.exp((-d2**2)/2) # Check
+        TH = (-(q*S*np.exp(-q*T)*N_d1) + (r*K*np.exp(-r*T)*N_d2) - (((sigma/np.sqrt(T*8*np.pi))*K*np.exp(-r*T)*np.exp((-d2**2)/2))))/365
         G = (1/(sigma*S*np.sqrt(T)))*np.exp(-q*T)*np.exp((-d1**2)/2)/np.sqrt(2*np.pi)
 
 
