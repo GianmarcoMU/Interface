@@ -9,6 +9,7 @@ import scipy as sp
 from scipy import stats
 from scipy.stats import norm
 import numpy as np
+from tkinter import messagebox
 
 # Following the underlying hierarchist approach of tkinter, create the main building block: root
 root = ttk.Tk()
@@ -43,16 +44,27 @@ rate_l = ttk.Label(frame2, text = "Interest Rate", font = ('Helvetica', 10, 'bol
 div_l = ttk.Label(frame2, text = "Dividend Yield", font = ('Helvetica', 10, 'bold')).grid(row = 5, column = 2, sticky = "W", padx = 5, pady = 5)
 
 # We create this auxiliary variable to be able to retrieve if the user has selected PUT or CALL
-put_call = ttk.BooleanVar()
-put_call.set(FALSE)
+put_check = ttk.BooleanVar()
+put_check.set(FALSE)
+call_check = ttk.BooleanVar()
+call_check.set(FALSE)
+american_check = ttk.BooleanVar()
+american_check.set(FALSE)
+european_check = ttk.BooleanVar()
+european_check.set(FALSE)
 
-put = ttk.Checkbutton(frame2, text = "Put",variable = put_call).grid(row = 0, column = 1, sticky = "W")
-call = ttk.Checkbutton(frame2, text = "Call").grid(row = 0, column = 2, sticky = "W")
-american = ttk.Checkbutton(frame2, text = "American").grid(row = 1, column = 1, sticky = "W")
-european = ttk.Checkbutton(frame2, text = "European").grid(row = 1, column = 2, sticky = "W")
+put = ttk.Checkbutton(frame2, text = "Put",variable = put_check)
+call = ttk.Checkbutton(frame2, text = "Call", variable = call_check)
+american = ttk.Checkbutton(frame2, text = "American", variable = american_check)
+european = ttk.Checkbutton(frame2, text = "European", variable = european_check)
 bs = ttk.Checkbutton(frame2, text = "Black-Scholes").grid(row = 2, column = 1, sticky = "W")
 bin = ttk.Checkbutton(frame2, text = "Binomial Tree").grid(row = 2, column = 2, sticky = "W")
 jdm = ttk.Checkbutton(frame2, text = "Jump Diffusion").grid(row = 2, column = 3, sticky = "W")
+
+put.grid(row = 0, column = 1, sticky = "W")
+call.grid(row = 0, column = 2, sticky = "W")
+american.grid(row = 1, column = 1, sticky = "W")
+european.grid(row = 1, column = 2, sticky = "W")
 
 str_pr = ttk.Entry(frame2)
 st_pr = ttk.Entry(frame2)
@@ -80,7 +92,7 @@ def BS():
     d1 = (np.log(S/K)+(r-q+(sigma**2)/2)*T)/(sigma*np.sqrt(T))
     d2 = d1 - (sigma*(np.sqrt(T)))
 
-    if put_call.get() == FALSE:
+    if put_check.get() == FALSE and call_check.get() == TRUE and european_check.get() == TRUE:
         N_d1 = norm.cdf(d1)
         N_d2 = norm.cdf(d2)
         c0 = (S*np.exp(-q*T)*N_d1)-(K*np.exp(-r*T)*N_d2)
@@ -90,7 +102,7 @@ def BS():
         TH = ((q*S*np.exp(-q*T)*N_d1) - (r*K*np.exp(-r*T)*N_d2) - (((sigma/np.sqrt(T*8*np.pi))*K*np.exp(-r*T)*np.exp((-d2**2)/2))))/365
         G = (1/(sigma*S*np.sqrt(T)))*np.exp(-q*T)*np.exp((-d1**2)/2)/np.sqrt(2*np.pi)
 
-    else:
+    elif put_check.get() == TRUE and call_check.get() == FALSE and european_check.get() == TRUE:
         N_d1 = norm.cdf(-d1)
         N_d2 = norm.cdf(-d2)
         c0 = (K*np.exp(-r*T)*N_d2)-(S*np.exp(-q*T)*N_d1)
@@ -99,6 +111,9 @@ def BS():
         R = -T*K*np.exp(-r*T)*N_d2/100
         TH = (-(q*S*np.exp(-q*T)*N_d1) + (r*K*np.exp(-r*T)*N_d2) - (((sigma/np.sqrt(T*8*np.pi))*K*np.exp(-r*T)*np.exp((-d2**2)/2))))/365
         G = (1/(sigma*S*np.sqrt(T)))*np.exp(-q*T)*np.exp((-d1**2)/2)/np.sqrt(2*np.pi)
+
+    else:
+        messagebox.showerror("ERROR", "Check that you have correctly specify both Option Type and Exercise Style. Note that Black and Scholes Model can only be used with European Options.")
 
 
     th_price.delete(0, len(str(th_price.get())))
@@ -127,7 +142,11 @@ def cancel():
     vega.delete(0, len(str(vega.get())))
     rho.delete(0, len(str(rho.get())))
     theta.delete(0, len(str(theta.get())))
-    gamma.delete(0, len(str(gamma.get())))  
+    gamma.delete(0, len(str(gamma.get())))
+    put.deselect()
+    call.deselect()
+    american.deselect()
+    european.deselect()  
 
 # Create two buttons that calculate outputs and reset inputs
 calc = ttk.Button(frame3, text = "CALCULATE",command = BS).grid(row = 0, column = 0, padx = 160, pady = 5)
