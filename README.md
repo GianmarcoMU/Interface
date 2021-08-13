@@ -8,8 +8,8 @@ For now, we have included two pricing models: Black and Scholes for Europeans an
 
 You get directly run the Pyhton script on your Terminal: 
   
-  cd "c:\Users\....."
-  
-  python File_Name.py
+cd "c:\Users\....."
+<br>
+python File_Name.py
   
 Another interesting alternative is to create a .bat file on the desktop that directly perform the above task
