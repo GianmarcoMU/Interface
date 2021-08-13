@@ -52,13 +52,15 @@ american_check = ttk.BooleanVar()
 american_check.set(FALSE)
 european_check = ttk.BooleanVar()
 european_check.set(FALSE)
+binomial_check = ttk.BooleanVar()
+binomial_check.set(FALSE)
 
-put = ttk.Checkbutton(frame2, text = "Put",variable = put_check)
+put = ttk.Checkbutton(frame2, text = "Put", variable = put_check)
 call = ttk.Checkbutton(frame2, text = "Call", variable = call_check)
 american = ttk.Checkbutton(frame2, text = "American", variable = american_check)
 european = ttk.Checkbutton(frame2, text = "European", variable = european_check)
 bs = ttk.Checkbutton(frame2, text = "Black-Scholes").grid(row = 2, column = 1, sticky = "W")
-bin = ttk.Checkbutton(frame2, text = "Binomial Tree").grid(row = 2, column = 2, sticky = "W")
+bin = ttk.Checkbutton(frame2, text = "Binomial Tree", variable = binomial_check).grid(row = 2, column = 2, sticky = "W")
 jdm = ttk.Checkbutton(frame2, text = "Jump Diffusion").grid(row = 2, column = 3, sticky = "W")
 
 put.grid(row = 0, column = 1, sticky = "W")
@@ -81,18 +83,28 @@ rate.grid(row = 5, column = 1)
 div.grid(row = 5, column = 3)
 
 # We now define a first function for the Black-Scholes model
-def BS():
+def OptionPricing():
+
     S = float(st_pr.get())
     K = float(str_pr.get())
     T = float(maturity.get())
     sigma = float(vol.get())
     r = float(rate.get())
     q = float(div.get())
+    steps = 2
+    delta_time = T/steps
+    u = np.exp(sigma*np.sqrt(delta_time))
+    d = 1/u
+    q_rn = (1/(u-d))*(np.exp(r*delta_time)-d)
+    qq = 1-q_rn
+    dis = 1/(1+r)
+    row = steps+1
+    col = steps+1   
 
     d1 = (np.log(S/K)+(r-q+(sigma**2)/2)*T)/(sigma*np.sqrt(T))
     d2 = d1 - (sigma*(np.sqrt(T)))
 
-    if put_check.get() == FALSE and call_check.get() == TRUE and european_check.get() == TRUE:
+    if put_check.get() == FALSE and call_check.get() == TRUE and european_check.get() == TRUE and binomial_check.get() == FALSE:
         N_d1 = norm.cdf(d1)
         N_d2 = norm.cdf(d2)
         c0 = (S*np.exp(-q*T)*N_d1)-(K*np.exp(-r*T)*N_d2)
@@ -102,7 +114,7 @@ def BS():
         TH = ((q*S*np.exp(-q*T)*N_d1) - (r*K*np.exp(-r*T)*N_d2) - (((sigma/np.sqrt(T*8*np.pi))*K*np.exp(-r*T)*np.exp((-d2**2)/2))))/365
         G = (1/(sigma*S*np.sqrt(T)))*np.exp(-q*T)*np.exp((-d1**2)/2)/np.sqrt(2*np.pi)
 
-    elif put_check.get() == TRUE and call_check.get() == FALSE and european_check.get() == TRUE:
+    elif put_check.get() == TRUE and call_check.get() == FALSE and european_check.get() == TRUE and binomial_check.get() == FALSE:
         N_d1 = norm.cdf(-d1)
         N_d2 = norm.cdf(-d2)
         c0 = (K*np.exp(-r*T)*N_d2)-(S*np.exp(-q*T)*N_d1)
@@ -112,9 +124,44 @@ def BS():
         TH = (-(q*S*np.exp(-q*T)*N_d1) + (r*K*np.exp(-r*T)*N_d2) - (((sigma/np.sqrt(T*8*np.pi))*K*np.exp(-r*T)*np.exp((-d2**2)/2))))/365
         G = (1/(sigma*S*np.sqrt(T)))*np.exp(-q*T)*np.exp((-d1**2)/2)/np.sqrt(2*np.pi)
 
+    elif binomial_check.get() == TRUE and european_check.get() == FALSE:
+        
+        lattice = np.zeros((row, col))
+        payoff = np.zeros((row, col))
+        price = np.zeros((row, col))
+        lattice[0, 0] = S
+
+        for i in range(1, row, 1):
+            for j in range(1, col, 1):
+                lattice[0, j] = S*(u**j)
+                lattice[i, j] = lattice[i-1, j-1]*d
+
+        for i in range(0, row, 1):
+            for j in range(0, col, 1):
+                if lattice[i, j] == 0:
+                    payoff[i, j] = 0
+                else:
+                    if put_check.get() == TRUE and call_check.get() == FALSE:
+                        payoff[i, j] = max(K-lattice[i, j], 0)
+                    elif put_check.get() == FALSE and call_check.get() == TRUE:
+                        payoff[i, j] = max(lattice[i, j]-K, 0)
+                    else:
+                        messagebox.showerror("ERROR", "You must select the Option Type")
+                        return
+
+        for i in range(row-1, -1, -1):
+            for j in range(col-1, -1, -1):
+                if lattice[i, j] == 0:
+                    price[i, j] = 0
+                else:
+                    if j == col-1:
+                        price[i, j] = payoff[i, j]
+                    else:
+                        price[i, j] = max(payoff[i, j], dis*(q_rn*price[i, j+1]+qq*price[i+1, j+1]))
+        c0 = price[0, 0]
+
     else:
         messagebox.showerror("ERROR", "Check that you have correctly specify both Option Type and Exercise Style. Note that Black and Scholes Model can only be used with European Options.")
-
 
     th_price.delete(0, len(str(th_price.get())))
     delta.delete(0, len(str(delta.get())))
@@ -149,7 +196,7 @@ def cancel():
     european.deselect()  
 
 # Create two buttons that calculate outputs and reset inputs
-calc = ttk.Button(frame3, text = "CALCULATE",command = BS).grid(row = 0, column = 0, padx = 160, pady = 5)
+calc = ttk.Button(frame3, text = "CALCULATE",command = OptionPricing).grid(row = 0, column = 0, padx = 160, pady = 5)
 reset = ttk.Button(frame3, text = "RESET", command = cancel).grid(row = 1, column = 0)
 plot = ttk.Button(frame3, text = "PLOT").grid(row = 2, column = 0, pady = 5)
 
