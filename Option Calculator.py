@@ -1,4 +1,5 @@
-### Here we try to create an interface starting from the original documentation about tkinter
+### This Pyhton code has been created using tkinter, to produce an user-friendly interface for option pricing
+### Gianmarco Mulazzani - 3026084 ###########################################################################
 
 # Firstly, import the required library. Namely, tkinter
 import tkinter as ttk
@@ -33,17 +34,18 @@ derivatives using different methods \nfor given various inputs. Before using it 
 notation (dot) for decimals and specify the dates in the following format.").grid(row = 0, columnspan = 4, sticky = "W")
 
 # Create some labels and buttons for the inputs
-opt_type = ttk.Label(frame2, text = "Option Type:", font = ('Helvetica', 10, 'bold')).grid(row = 0, column = 0, sticky = "W", padx = 5, pady = 5)
-ex_style = ttk.Label(frame2, text = "Exercise Style:", font = ('Helvetica', 10, 'bold')).grid(row = 1, column = 0, sticky = "W", padx = 5, pady = 5)
-meth = ttk.Label(frame2, text = "Methodology:", font = ('Helvetica', 10, 'bold')).grid(row = 2, column = 0, sticky = "W", padx = 5, pady = 5)
-str_pr_l = ttk.Label(frame2, text = "Strike Price", font = ('Helvetica', 10, 'bold')).grid(row = 3, column = 0, sticky = "W", padx = 5, pady = 5)
-st_pr_l = ttk.Label(frame2, text = "Stock Price", font = ('Helvetica', 10, 'bold')).grid(row = 3, column = 2, sticky = "W", padx = 5, pady = 5)
-maturity_l = ttk.Label(frame2, text = "Maturity", font = ('Helvetica', 10, 'bold')).grid(row = 4, column = 0, sticky = "W", padx = 5, pady = 5)
-vol_l = ttk.Label(frame2, text = "Volatility", font = ('Helvetica', 10, 'bold')).grid(row = 4, column = 2, sticky = "W", padx = 5, pady = 5)
-rate_l = ttk.Label(frame2, text = "Interest Rate", font = ('Helvetica', 10, 'bold')).grid(row = 5, column = 0, sticky = "W", padx = 5, pady = 5)
-div_l = ttk.Label(frame2, text = "Dividend Yield", font = ('Helvetica', 10, 'bold')).grid(row = 5, column = 2, sticky = "W", padx = 5, pady = 5)
+opt_type = ttk.Label(frame2, text = "Option Type:", font = ('Helvetica', 10, 'bold')).grid(row = 0, column = 0, sticky = "W", padx = 5, pady = 5) # Option type: put or call
+ex_style = ttk.Label(frame2, text = "Exercise Style:", font = ('Helvetica', 10, 'bold')).grid(row = 1, column = 0, sticky = "W", padx = 5, pady = 5) # Exercise style: american vs european
+meth = ttk.Label(frame2, text = "Methodology:", font = ('Helvetica', 10, 'bold')).grid(row = 2, column = 0, sticky = "W", padx = 5, pady = 5) # Methodology: BS, Binomial Tree or JD Model
+str_pr_l = ttk.Label(frame2, text = "Strike Price", font = ('Helvetica', 10, 'bold')).grid(row = 3, column = 0, sticky = "W", padx = 5, pady = 5) # Label for the strike price K
+st_pr_l = ttk.Label(frame2, text = "Stock Price", font = ('Helvetica', 10, 'bold')).grid(row = 3, column = 2, sticky = "W", padx = 5, pady = 5) # Label for the stock price S
+maturity_l = ttk.Label(frame2, text = "Maturity", font = ('Helvetica', 10, 'bold')).grid(row = 4, column = 0, sticky = "W", padx = 5, pady = 5) # Label for the maturity T
+vol_l = ttk.Label(frame2, text = "Volatility", font = ('Helvetica', 10, 'bold')).grid(row = 4, column = 2, sticky = "W", padx = 5, pady = 5) # Label for volatility: sigma
+rate_l = ttk.Label(frame2, text = "Interest Rate", font = ('Helvetica', 10, 'bold')).grid(row = 5, column = 0, sticky = "W", padx = 5, pady = 5) # Label for the interest rate: r
+div_l = ttk.Label(frame2, text = "Dividend Yield", font = ('Helvetica', 10, 'bold')).grid(row = 5, column = 2, sticky = "W", padx = 5, pady = 5) # Label for the dividend yield: q
 
-# We create this auxiliary variable to be able to retrieve if the user has selected PUT or CALL
+# Create these auxiliary variables to be able to retrieve if the user has selected certain features
+# Note that we define boolean variables that will tell us if a certain characterist has been selected (TRUE or 1) or not (FALSE or 0)
 put_check = ttk.BooleanVar()
 put_check.set(FALSE)
 call_check = ttk.BooleanVar()
@@ -55,6 +57,7 @@ european_check.set(FALSE)
 binomial_check = ttk.BooleanVar()
 binomial_check.set(FALSE)
 
+# Create the checkbuttons that will constitute some of the inputs required for the computation
 put = ttk.Checkbutton(frame2, text = "Put", variable = put_check)
 call = ttk.Checkbutton(frame2, text = "Call", variable = call_check)
 american = ttk.Checkbutton(frame2, text = "American", variable = american_check)
@@ -63,11 +66,14 @@ bs = ttk.Checkbutton(frame2, text = "Black-Scholes").grid(row = 2, column = 1, s
 bin = ttk.Checkbutton(frame2, text = "Binomial Tree", variable = binomial_check).grid(row = 2, column = 2, sticky = "W")
 jdm = ttk.Checkbutton(frame2, text = "Jump Diffusion").grid(row = 2, column = 3, sticky = "W")
 
+# These lines are used to position in the grid the above buttons.
+# As a general rule, note that we cannot directly specify these on the variables (lines 61-67) because then methods cannot be applied
 put.grid(row = 0, column = 1, sticky = "W")
 call.grid(row = 0, column = 2, sticky = "W")
 american.grid(row = 1, column = 1, sticky = "W")
 european.grid(row = 1, column = 2, sticky = "W")
 
+# Define other varibles and their position in the grid
 str_pr = ttk.Entry(frame2)
 st_pr = ttk.Entry(frame2)
 maturity = ttk.Entry(frame2)
@@ -82,7 +88,8 @@ vol.grid(row = 4, column = 3)
 rate.grid(row = 5, column = 1)
 div.grid(row = 5, column = 3)
 
-# We now define a first function for the Black-Scholes model
+# Define the function for the option pricing calculation
+# This is along function because all the scenarios are included in a single function
 def OptionPricing():
 
     S = float(st_pr.get())
@@ -200,7 +207,7 @@ calc = ttk.Button(frame3, text = "CALCULATE",command = OptionPricing).grid(row =
 reset = ttk.Button(frame3, text = "RESET", command = cancel).grid(row = 1, column = 0)
 plot = ttk.Button(frame3, text = "PLOT").grid(row = 2, column = 0, pady = 5)
 
-# Define outputs: both labels and entries
+# Define outputs: both labels and entries. Specify also their position in the grid
 th_price_l = ttk.Label(frame4, text = "Theoretical Price").grid(row = 0, column = 0, sticky = "W", pady = 5)
 delta_l = ttk.Label(frame4, text = "Delta").grid(row = 0, column = 2, sticky = "W")
 rho_l = ttk.Label(frame4, text = "Rho").grid(row = 1, column = 0, sticky = "W", pady = 5)
@@ -222,6 +229,7 @@ rho.grid(row = 1, column = 1, pady = 5)
 theta.grid(row = 2, column = 1, pady = 5)
 gamma.grid(row = 1, column = 3, pady = 5)
 
+# Here all the frames are positioned within the main root
 mainframe.grid(row = 0, column = 0)
 frame1.grid(row = 0, columnspan = 2, sticky = "EW")
 frame2.grid(row = 1, columnspan = 2, sticky = "EW")
