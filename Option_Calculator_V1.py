@@ -1,4 +1,5 @@
-### Here we try to create an interface starting from the original documentation about tkinter
+### Creation of a GUI using tkinter for option pricing
+### Gianmarco Mulazzani 2021
 
 # Firstly, import the required library. Namely, tkinter
 import tkinter as ttk
@@ -33,7 +34,7 @@ welcome = ttk.Label(frame1, text = "Welcome to the Option Calculator! This appli
  notation (dot) for decimals and specify the maturity in terms of years (i.e. 0.5 = 6 months). \nMoreover, the application has been made\
  such that the Black-Scholes model is allowed only for european options while the binomial one only for american options.", justify = LEFT, relief = GROOVE).grid(row = 0, columnspan = 4, sticky = "W")
 
-# Create some labels and buttons for the inputs
+# Create some labels and buttons for the inputs. Note that the grid method is used to position them in the frame
 opt_type = ttk.Label(frame2, text = "Option Type:", font = ('Helvetica', 10, 'bold')).grid(row = 0, column = 0, sticky = "W", padx = 5, pady = 5)
 ex_style = ttk.Label(frame2, text = "Exercise Style:", font = ('Helvetica', 10, 'bold')).grid(row = 1, column = 0, sticky = "W", padx = 5, pady = 5)
 meth = ttk.Label(frame2, text = "Methodology:", font = ('Helvetica', 10, 'bold')).grid(row = 2, column = 0, sticky = "W", padx = 5, pady = 5)
@@ -44,7 +45,7 @@ vol_l = ttk.Label(frame2, text = "Volatility", font = ('Helvetica', 10, 'bold'))
 rate_l = ttk.Label(frame2, text = "Interest Rate", font = ('Helvetica', 10, 'bold')).grid(row = 5, column = 0, sticky = "W", padx = 5, pady = 5)
 div_l = ttk.Label(frame2, text = "Dividend Yield", font = ('Helvetica', 10, 'bold')).grid(row = 5, column = 2, sticky = "W", padx = 5, pady = 5)
 
-# We create this auxiliary variable to be able to retrieve if the user has selected PUT or CALL
+# Create auxiliary variables associated to check buttons, that allow to assign a boolean vectors to check boxes
 put_check = ttk.BooleanVar()
 put_check.set(FALSE)
 call_check = ttk.BooleanVar()
@@ -56,6 +57,7 @@ european_check.set(FALSE)
 binomial_check = ttk.BooleanVar()
 binomial_check.set(FALSE)
 
+# Other inputs are created in the form of check buttons, namely for the option type, exercise style and methodology
 put = ttk.Checkbutton(frame2, text = "Put", variable = put_check)
 call = ttk.Checkbutton(frame2, text = "Call", variable = call_check)
 american = ttk.Checkbutton(frame2, text = "American", variable = american_check)
@@ -63,6 +65,7 @@ european = ttk.Checkbutton(frame2, text = "European", variable = european_check)
 bs = ttk.Checkbutton(frame2, text = "Black-Scholes")
 bin = ttk.Checkbutton(frame2, text = "Binomial Tree", variable = binomial_check)
 
+# The above check boxes have been positioned into the grid
 put.grid(row = 0, column = 1, sticky = "W")
 call.grid(row = 0, column = 2, sticky = "W")
 american.grid(row = 1, column = 1, sticky = "W")
@@ -70,6 +73,8 @@ european.grid(row = 1, column = 2, sticky = "W")
 bs.grid(row = 2, column = 1, sticky = "W")
 bin.grid(row = 2, column = 2, sticky = "W")
 
+# Define the output variables and their position. Note that it is necessary to specify the grid position in a separate
+# line of code since otherwise it could not be possible to use certain methods with these vars.
 str_pr = ttk.Entry(frame2)
 st_pr = ttk.Entry(frame2)
 maturity = ttk.Entry(frame2)
@@ -84,16 +89,19 @@ vol.grid(row = 4, column = 3)
 rate.grid(row = 5, column = 1)
 div.grid(row = 5, column = 3)
 
-# We now define a first function for the Black-Scholes model
+# Define the Option Pricing function that using a concatanation of ifs to apply Black-Scholes or binomial model according to
+# the choice of the user. Moreover, different conditions are set to allow for different exercise styles and option types.
 def OptionPricing():
 
+    # Transform the inputs into numbers since they are saved as strings
     S = float(st_pr.get())
     K = float(str_pr.get())
     T = float(maturity.get())
     sigma = float(vol.get())
     r = float(rate.get())
     q = float(div.get())
-    steps = 2
+    # Set some variables and constants that are used in the binomial model
+    steps = 150 # If one want to change it must access this source code
     delta_time = T/steps
     u = np.exp(sigma*np.sqrt(delta_time))
     d = 1/u
@@ -110,6 +118,7 @@ def OptionPricing():
         N_d1 = norm.cdf(d1)
         N_d2 = norm.cdf(d2)
         c0 = (S*np.exp(-q*T)*N_d1)-(K*np.exp(-r*T)*N_d2)
+        # The formulas for the greeks are derived in the pdf report file
         D = np.exp(-q*T)*N_d1
         V = K*np.exp(-r*T)*np.sqrt(T)*np.exp((-d2**2)/2)/(100*np.sqrt(2*np.pi))
         R = T*K*np.exp(-r*T)*N_d2/100
@@ -128,16 +137,19 @@ def OptionPricing():
 
     elif binomial_check.get() == TRUE and european_check.get() == FALSE:
         
+        # Here some zeros matrices are created and then populated using different for loops
         lattice = np.zeros((row, col))
         payoff = np.zeros((row, col))
         price = np.zeros((row, col))
         lattice[0, 0] = S
 
+        # This for loop compute the lattice dynamics for the price
         for i in range(1, row, 1):
             for j in range(1, col, 1):
                 lattice[0, j] = S*(u**j)
                 lattice[i, j] = lattice[i-1, j-1]*d
 
+        # This loop is used to compute the payoff of a classical plain vanilla option
         for i in range(0, row, 1):
             for j in range(0, col, 1):
                 if lattice[i, j] == 0:
@@ -150,7 +162,8 @@ def OptionPricing():
                     else:
                         messagebox.showerror("ERROR", "You must select the Option Type")
                         return
-
+                      
+        # This loop computes the value (price) of the american option 
         for i in range(row-1, -1, -1):
             for j in range(col-1, -1, -1):
                 if lattice[i, j] == 0:
@@ -165,6 +178,7 @@ def OptionPricing():
     else:
         messagebox.showerror("ERROR", "Check that you have correctly specify both Option Type and Exercise Style. Note that Black and Scholes Model can only be used with European Options.")
 
+    # These lines of code are needed to delete the content of the entry boxes and insert the new values converted in strings
     th_price.delete(0, len(str(th_price.get())))
     delta.delete(0, len(str(delta.get())))
     vega.delete(0, len(str(vega.get())))
@@ -200,11 +214,11 @@ def cancel():
     bin.deselect()
       
 
-# Create two buttons that calculate outputs and reset inputs
+# Create two buttons that calculate outputs and reset everything
 calc = ttk.Button(frame3, text = "CALCULATE",command = OptionPricing, height = 1, width = 15, fg = "green", bg = "#bded9b", font = ('Helvetica', 10, 'bold')).grid(row = 0, column = 0, padx = 160, pady = 10)
 reset = ttk.Button(frame3, text = "RESET", command = cancel, height = 1, width = 15, fg = "red", bg = "#ff8989", font = ('Helvetica', 10, 'bold')).grid(row = 1, column = 0, pady = 10)
 
-# Define outputs: both labels and entries
+# Define outputs: both labels and entries and their position using grid
 th_price_l = ttk.Label(frame4, text = "Theoretical Price").grid(row = 0, column = 0, sticky = "W", pady = 5)
 delta_l = ttk.Label(frame4, text = "Delta").grid(row = 0, column = 2, sticky = "W")
 rho_l = ttk.Label(frame4, text = "Rho").grid(row = 1, column = 0, sticky = "W", pady = 5)
@@ -226,6 +240,7 @@ rho.grid(row = 1, column = 1, pady = 5)
 theta.grid(row = 2, column = 1, pady = 5)
 gamma.grid(row = 1, column = 3, pady = 5)
 
+# The final step is to position the four frames defined
 mainframe.grid(row = 0, column = 0)
 frame1.grid(row = 0, columnspan = 2, sticky = "EW")
 frame2.grid(row = 1, columnspan = 2, sticky = "EW")
