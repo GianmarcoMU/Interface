@@ -3,6 +3,7 @@ from numpy.core.fromnumeric import shape
 from numpy.lib.function_base import percentile
 
 # Firstly, we define the variables needed to implement the lattice discretization
+# Note in q_rn the div term that introduces continuous dividends in the model
 steps = 150
 T = 1.5
 S = 60
@@ -10,9 +11,10 @@ K = 65
 delta_time = T/steps
 sigma = 0.3
 rate = 0.06
+div = 0.03
 u = np.exp(sigma*np.sqrt(delta_time))
 d = 1/u
-q_rn = (1/(u-d))*(np.exp(rate*delta_time)-d)
+q_rn = (1/(u-d))*(np.exp((rate-div)*delta_time)-d)
 qq = 1-q_rn
 dis = np.exp(-rate*delta_time)
 
